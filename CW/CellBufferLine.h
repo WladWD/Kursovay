@@ -16,5 +16,6 @@ namespace Battleship
 		~CellBufferLine();
 
 		void Draw(glm::vec2 mStart, glm::vec2 mEnd);
+		void Draw(glm::vec2 mStart, glm::vec2 mEnd, float mWidth, glm::vec4 mColor);
 	};
 }

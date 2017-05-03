@@ -180,6 +180,13 @@ LRESULT Window_::Window::WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 		sleep_app = false;
 		size_move = false;
 	}return 0;
+	case WM_LBUTTONDOWN: 
+	{
+		mEngine->Pick(
+		 LOWORD(lp),
+			window_size.cy - HIWORD(lp)
+		);
+	}return 0;
 	case WM_GETMINMAXINFO:
 	{
 		((MINMAXINFO *)lp)->ptMinTrackSize.x = 1200;
