@@ -28,7 +28,16 @@ Battleship::DrawPole::~DrawPole()
 			delete mGridCell[i][j];
 }
 
-bool Battleship::DrawPole::Pick1(glm::vec2 mPos)
+bool Battleship::DrawPole::ItsOver(void)
+{
+	bool ok = false;
+	for (register int i = 0; i < 10; ++i)
+		for (register int j = 0; j < 10; ++j)
+			ok = ok  || (mGridCell[i][j]->GetState() && !mGridCell[i][j]->IsPicked());
+	return !ok;
+}
+
+bool Battleship::DrawPole::Pick1(glm::vec2 mPos, int32_t &x, int32_t &y, bool &full, bool test)
 {
 	//if (!my_turn)
 	//	return false;
@@ -36,9 +45,16 @@ bool Battleship::DrawPole::Pick1(glm::vec2 mPos)
 
 	glm::vec2 mX = (mPos - mTop) / mStep;
 	if (mX.x >= 0.0f && mX.x <= 10.0f &&
-		mX.y <= 0.0f && mX.y >= -10.0f && mGridCell[static_cast<int32_t>(mX.x)][static_cast<int32_t>(-mX.y)]->GetState())
+		mX.y <= 0.0f && mX.y >= -10.0f && mGridCell[static_cast<int32_t>(mX.x)][static_cast<int32_t>(-mX.y)]->GetStateUsed())
 	{
-		mGridCell[static_cast<int32_t>(mX.x)][static_cast<int32_t>(-mX.y)]->Pick();
+
+		x = static_cast<int32_t>(mX.x);
+		y = static_cast<int32_t>(-mX.y);
+		full = mGridCell[x][y]->GetState();
+		
+		if (!test)
+			mGridCell[x][y]->Pick();// static_cast<int32_t>(mX.x)][static_cast<int32_t>(-mX.y)
+
 		return true;
 	}
 	return false;
@@ -47,6 +63,12 @@ bool Battleship::DrawPole::Pick1(glm::vec2 mPos)
 void Battleship::DrawPole::Pick2(uint32_t i, uint32_t j, bool full)
 {
 	mGridCell[i][j]->Pick(full);
+}
+
+bool Battleship::DrawPole::Pick3(uint32_t i, uint32_t j)
+{
+	mGridCell[i][j]->Pick();
+	return mGridCell[i][j]->GetState();
 }
 
 void Battleship::DrawPole::DrawGrid(void)

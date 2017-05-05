@@ -9,7 +9,7 @@ Window_::Window::Window(HINSTANCE exe_start_adress)
 	InitWindow(exe_start_adress);
 	InitOpenGL();
 
-	mEngine = new Battleship::Engine();
+	mEngine = new Battleship::Engine(g_hWnd);
 	mEngine->Resize(window_size.cx, window_size.cy);
 }
 
