@@ -4,9 +4,10 @@
 Battleship::GameClient::GameClient()
 {
 	std::ifstream mf(FILENAME);
+	int mPort;
 	std::string mstrIP;
 	mf >> mstrIP;
-
+	mf >> mPort;
 	WSADATA wd;
 	int eror = WSAStartup(0x0202, &wd);
 
@@ -15,7 +16,7 @@ Battleship::GameClient::GameClient()
 
 	sockaddr_in mAddr;
 	mAddr.sin_family = AF_INET;
-	mAddr.sin_port = htons(PORT);
+	mAddr.sin_port = htons(mPort);
 	
 	check_OK(inet_addr(mstrIP.c_str()) == INADDR_NONE);
 	mAddr.sin_addr.S_un.S_addr = inet_addr(mstrIP.c_str());

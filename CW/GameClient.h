@@ -18,7 +18,7 @@ MessageBox(NULL, L"its OVER, No Connection!!!", L"Все пипец!!!", MB_OK);\
 					   }  
 	//WSACleanup(); 
 #define PORT 5522
-#define FILENAME "resource\\serv_ip.txt"
+#define FILENAME "resource\\serv_ip_port.txt"
 	class GameClient
 	{
 		SOCKET mSock;

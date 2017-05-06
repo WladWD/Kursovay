@@ -115,8 +115,8 @@ void Window_::Window::InitWindow(HINSTANCE exe_start_adress)
 
 	HDC hdc_cur = GetDC(NULL);
 
-	UINT width = GetDeviceCaps(hdc_cur, VERTRES);
-	UINT height = GetDeviceCaps(hdc_cur, HORZRES);
+	UINT width = GetDeviceCaps(hdc_cur, VERTRES)/2;
+	UINT height = GetDeviceCaps(hdc_cur, HORZRES)/2;
 	DeleteDC(hdc_cur);
 
 	if (!RegisterClassEx(&wndclass))
@@ -130,8 +130,8 @@ void Window_::Window::InitWindow(HINSTANCE exe_start_adress)
 		MessageBox(NULL, L"Error Create Window", NULL, MB_OK);
 		exit(1);
 	}
-
-	ShowWindow(g_hWnd, SW_SHOWMAXIMIZED);
+	
+	ShowWindow(g_hWnd, SW_SHOWNORMAL);//SW_SHOWMAXIMIZED
 //	ShowCursor(FALSE);
 }
 
@@ -187,11 +187,11 @@ LRESULT Window_::Window::WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			window_size.cy - HIWORD(lp)
 		);
 	}return 0;
-	case WM_GETMINMAXINFO:
-	{
-		((MINMAXINFO *)lp)->ptMinTrackSize.x = 1200;
-		((MINMAXINFO *)lp)->ptMinTrackSize.y = 900;
-	}return 0;
+	//case WM_GETMINMAXINFO:
+	//{
+	//	((MINMAXINFO *)lp)->ptMinTrackSize.x = 1200;
+	//	((MINMAXINFO *)lp)->ptMinTrackSize.y = 900;
+	//}return 0;
 	case WM_ACTIVATE:
 	{
 		if (LOWORD(wp) == WA_INACTIVE)

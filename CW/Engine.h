@@ -8,8 +8,9 @@ namespace Battleship
 {
 	class Engine
 	{
+		uint32_t cWinCounter;
 		HWND hwnd;
-		bool ok;
+		bool wait_to_answ;
 		bool my_turn, tx;
 
 		Shader::ShaderDrawCell *mShader;

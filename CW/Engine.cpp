@@ -1,7 +1,7 @@
 #include "Engine.h"
 
 
-Battleship::Engine::Engine(HWND hwnd) : ok(false), hwnd(hwnd)
+Battleship::Engine::Engine(HWND hwnd) : wait_to_answ(false), hwnd(hwnd)
 {
 	mTimer = new Timer::Timer();
 	float ss = 2.0f;
@@ -54,9 +54,9 @@ void Battleship::Engine::Pick(int32_t x, int32_t y)
 	glGetFloatv(GL_VIEWPORT, mdata);
 	int32_t mx, my;
 	bool full;
-	ok = mDrawPole1->Pick1(glm::vec2(x / mdata[2], y / mdata[3]), mx, my, full, true);
+	bool mok = mDrawPole1->Pick1(glm::vec2(x / mdata[2], y / mdata[3]), mx, my, full, true);
 
-	if (ok && my_turn) 
+	if (mok && my_turn)//mok && wait_to_answ
 	{
 		/*if (mDrawPole2->ItsOver())
 		{
@@ -65,10 +65,18 @@ void Battleship::Engine::Pick(int32_t x, int32_t y)
 		}
 		else*/
 			mClient->Sending(mx, my, full);
+
+
+			SendReciveStruct mRecived = mClient->Recive();
+			mDrawPole1->Pick2(mRecived.x, mRecived.y, mRecived.full);
+
+			my_turn = mRecived.full;
+			if (my_turn)
+				++cWinCounter;
 		//SendReciveStruct mRecived = mClient->Recive();
 		//mDrawPole1->Pick2(mRecived.x, mRecived.y, mRecived.full);
 
-		my_turn = !my_turn;
+		//my_turn = !my_turn;---------
 	}
 
 		//send to  server(coord, full);
@@ -115,7 +123,14 @@ void Battleship::Engine::Draw(void)
 	mDrawPole2->DrawGrid();
 	mDrawPole2->DrawCell(dt, gt);
 
-	if (mDrawPole2->ItsOver() && once)
+	if (cWinCounter == 20 && once)
+	{
+		MessageBox(NULL, L"You Win!!!", L"Game Over", MB_OK);
+		mClient->Sending(0, 0, 0, tx ? 4 : 3);
+		once = false;
+		DestroyWindow(hwnd);
+	}
+	else if (mDrawPole2->ItsOver() && once)
 	{
 		MessageBox(NULL, tx ? L"You Lose(((!!!" : L"You Win!!!", L"Game Over", MB_OK);
 		mClient->Sending(0, 0, 0, tx ? 3 : 4);
@@ -123,7 +138,37 @@ void Battleship::Engine::Draw(void)
 		DestroyWindow(hwnd);
 	}
 
-	if (!ok && !my_turn)
+	//if (!my_turn)//!ok && !my_turn)
+	//{
+	//	int32_t mx, my;
+	//	bool full;
+
+	//	SendReciveStruct mRecived = mClient->Recive();
+	//	mRecived.full = mDrawPole2->Pick3(mRecived.x, mRecived.y);
+	//	mClient->Sending(mRecived.x, mRecived.y, mRecived.full);
+
+	//	/*if (mDrawPole2->ItsOver())
+	//	{
+	//		mClient->Sending(mx, my, full, tx ? 3 : 4);
+	//	}*/
+	//	if(!mRecived.full)////////
+	//		my_turn = !my_turn;
+	//}
+	//else if (wait_to_answ && !my_turn)
+	//{
+	//	SendReciveStruct mRecived = mClient->Recive();
+	//	mDrawPole1->Pick2(mRecived.x, mRecived.y, mRecived.full);
+	//	//my_turn = !my_turn;
+	//	wait_to_answ = false;
+
+	//	if(mRecived.full)////////
+	//		wait_to_answ = my_turn = true;
+	//}
+	//if(!my_turn)
+	//take answ or continue draw;
+	//if answ receive -> mDrawPole2->Pick2(coord, full);
+
+	if (!my_turn)//!ok && !my_turn)
 	{
 		int32_t mx, my;
 		bool full;
@@ -136,18 +181,9 @@ void Battleship::Engine::Draw(void)
 		{
 			mClient->Sending(mx, my, full, tx ? 3 : 4);
 		}*/
-		my_turn = !my_turn;
+		if(!mRecived.full)////////
+			my_turn = !my_turn;
 	}
-	else if (ok && !my_turn)
-	{
-		SendReciveStruct mRecived = mClient->Recive();
-		mDrawPole1->Pick2(mRecived.x, mRecived.y, mRecived.full);
-		//my_turn = !my_turn;
-		ok = false;
-	}
-	//if(!my_turn)
-	//take answ or continue draw;
-	//if answ receive -> mDrawPole2->Pick2(coord, full);
 }
 
 /*
