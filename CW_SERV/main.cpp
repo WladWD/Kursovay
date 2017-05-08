@@ -1,5 +1,6 @@
 #include <WinSock2.h>
 #include <iostream>
+#include <fstream>
 using namespace std;
 #define check_OK(mFlag) if(mFlag) \
 					{WSACleanup(); \
@@ -7,6 +8,7 @@ using namespace std;
 
 #define PORT 5522
 #define mPlayer 2
+int mPort;
 SOCKET mSock;
 
 uint32_t mPlayerCount;
@@ -24,6 +26,10 @@ void GameCicle(void);
 
 int main() 
 {
+	ifstream mf("port.txt");
+	mf >> mPort;
+	mf.close();
+
 	WSADATA wd;
 	int eror = WSAStartup(0x0202, &wd);
 
@@ -32,7 +38,7 @@ int main()
 
 	sockaddr_in mAddr;
 	mAddr.sin_family = AF_INET;
-	mAddr.sin_port = htons(PORT);
+	mAddr.sin_port = htons(mPort);
 	mAddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);
 
 	check_OK(bind(mSock, (LPSOCKADDR)&mAddr, sizeof(mAddr)) == SOCKET_ERROR);
@@ -68,8 +74,11 @@ void GameCicle(void)
 
 		mSize = recv(mClient[mCurrentPlayer ^ 1], (char *)&mSendRecive, sizeof(mSendRecive), 0);//1
 		mSize = send(mClient[mCurrentPlayer], (char *)&mSendRecive, sizeof(mSendRecive), 0);//0
-		mCurrentPlayer ^= 1;
+		
+		if(!mSendRecive.full)
+			mCurrentPlayer ^= 1;
 	}
+	//send(mClient[mCurrentPlayer], (char *)&mSendRecive, sizeof(mSendRecive), 0);//0
 	/*while (mSendRecive.player_number < 2)
 	{
 		int mNeed = sizeof(mSendRecive);
