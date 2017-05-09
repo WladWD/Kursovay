@@ -17,5 +17,7 @@
 #if defined(_WIN64) | defined(_WIN32)
 #define JNIEnv unsigned char
 #define jobject int
+
+#define WM_ONSOCKET WM_USER + 1
 #else
 #endif

@@ -26,7 +26,7 @@ MessageBox(NULL, L"its OVER, No Connection!!!", L"Все пипец!!!", MB_OK);\
 
 		SendReciveStruct mSendRecive;
 	public:
-		GameClient();
+		GameClient(HWND hWnd);
 		~GameClient();
 
 		bool Init(void);

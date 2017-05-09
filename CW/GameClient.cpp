@@ -1,7 +1,7 @@
 #include "GameClient.h"
 
 
-Battleship::GameClient::GameClient()
+Battleship::GameClient::GameClient(HWND hWnd)
 {
 	std::ifstream mf(FILENAME);
 	int mPort;
@@ -23,8 +23,9 @@ Battleship::GameClient::GameClient()
 
 	check_OK(connect(mSock, (LPSOCKADDR)&mAddr, sizeof(mAddr)));
 
+	//WSAAsyncSelect(mSock, hWnd, WM_ONSOCKET, (FD_READ | FD_CONNECT | FD_CLOSE));
 	recv(mSock, (char *)&mSendRecive, sizeof(mSendRecive), 0);
-
+	WSAAsyncSelect(mSock, hWnd, WM_ONSOCKET, (FD_READ | FD_CONNECT | FD_CLOSE));
 	mf.close();
 }
 

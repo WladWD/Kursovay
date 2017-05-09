@@ -18,6 +18,8 @@ namespace Battleship
 		Dimension *mDim;
 		DrawPole *mDrawPole1, *mDrawPole2;
 		GameClient *mClient;
+
+		bool mWait1, mWait2, mDataSave;
 		////////////////////////////////////////////////////////////
 		void Tick(void);
 		////////////////////////////////////////////////////////////
@@ -27,6 +29,7 @@ namespace Battleship
 		Engine(HWND hwnd);
 		~Engine();
 		////////////////////////////////////////////////////////////
+		void SetDateSave(void);
 		void Pick(int32_t x, int32_t y);
 		bool CloseGame(void);
 		void Resize(uint32_t mX, uint32_t mY);

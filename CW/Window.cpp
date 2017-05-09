@@ -135,6 +135,7 @@ void Window_::Window::InitWindow(HINSTANCE exe_start_adress)
 //	ShowCursor(FALSE);
 }
 
+
 LRESULT Window_::Window::WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 {
 	switch (msg)
@@ -187,19 +188,45 @@ LRESULT Window_::Window::WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp)
 			window_size.cy - HIWORD(lp)
 		);
 	}return 0;
+	case WM_ONSOCKET: 
+	{
+		if (WSAGETSELECTERROR(lp)) 
+		{
+			WSACleanup();
+			if(WSAGETSELECTERROR(lp))
+				MessageBox(NULL, L"its OVER, No Connection!!!", L"Все пипец!!!", MB_OK);
+			return 0;
+		}
+		switch (WSAGETSELECTEVENT(lp))
+		{
+		case FD_READ: 
+		{
+			if (mEngine)
+				mEngine->SetDateSave();
+		}break;
+		case FD_CONNECT:
+		{
+
+		}break;
+		default:
+			break;
+		}
+
+	}return 0;
 	//case WM_GETMINMAXINFO:
 	//{
 	//	((MINMAXINFO *)lp)->ptMinTrackSize.x = 1200;
 	//	((MINMAXINFO *)lp)->ptMinTrackSize.y = 900;
 	//}return 0;
-	case WM_ACTIVATE:
-	{
-		if (LOWORD(wp) == WA_INACTIVE)
-			sleep_app = true;
-		else
-			sleep_app = false;
-	}return 0;
-	default: return DefWindowProc(hwnd, msg, wp, lp);
+	//case WM_ACTIVATE:
+	//{
+	//	if (LOWORD(wp) == WA_INACTIVE)
+	//		sleep_app = true;
+	//	else
+	//		sleep_app = false;
+	//}return 0;
+	default:
+		return DefWindowProc(hwnd, msg, wp, lp);
 	}
 }
 
